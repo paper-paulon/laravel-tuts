@@ -10,7 +10,13 @@ Route::post('foo/bar', function()
     return 'Hello World';
 });
 
-//--> Registering A Route For Multiple Verbs
+//--> Registering A Route Responding To Any HTTP Verb
+Route::any('foo', function()
+{
+    return 'Hello World';
+});
+
+//--> Different approach Registering A Route For Multiple Verbs
 Route::match(array('GET', 'POST'), '/', function()
 {
     return 'Hello World';
