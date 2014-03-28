@@ -1,0 +1,50 @@
+//--> Defining a route filter : can be declare within route.php or filter.php
+//--> old = is the name of the filter
+//--> Input::get = is the http verb for GET
+Route::filter('old', function()
+{
+    if (Input::get('age') < 16)
+    {
+        return Redirect::to('restricted');
+    }
+});
+Route::filter('auth', function()
+{
+	if (Auth::guest()) return Redirect::guest('toursite');
+});
+
+//--> Attaching filter to a route
+//--> before = is a reserve key word to access filter before any other action taken inside the route
+//--> if $_GET['age'] as below 16 it will redirect to restricted route
+Route::get('user', array('before' => 'old', function()
+{
+    return 'You are over 16 years old!';
+}));
+
+//--> Attaching A Filter To A Controller Action
+//--> uses = is a reserve key word to validate the use of controller
+//--> UserController = is the name of the controller
+//--> showProfile = is the name of the method inside the controller
+Route::get('user', array('before' => 'old', 'uses' => 'UserController@showProfile'));
+
+//--> Attaching Multiple Filters To A Route
+//--> | = is the delimiter for filters
+Route::get('user', array('before' => 'auth|old', function()
+{
+    return 'You are authenticated and over 16 years old!';
+}));
+
+//--> Attaching Multiple Filters Via Array
+Route::get('user', array('before' => array('auth', 'old'), function()
+{
+    return 'You are authenticated and over 16 years old!';
+}));
+
+//--> Registering A Class Based Filter
+Route::filter('foo', 'FooFilter');
+class FooFilter {
+    public function filter()
+    {
+        // Filter logic...
+    }
+}
